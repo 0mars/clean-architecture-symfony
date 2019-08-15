@@ -1,0 +1,33 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    env(MONGODB_URL): ''
+    env(MONGODB_DB): ''
+    doctrine_mongodb.odm.metadata.xml.class: Doctrine\ORM\Mapping\Driver\YamlDriver
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    Example\Store\:
+        resource: '../src/*'
+        exclude: '../src/{Kernel.php}'
+
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    Example\Store\EntryPoints\Rest\Endpoints\:
+        resource: '../src/EntryPoints/Rest/Endpoints'
+        tags: ['controller.service_arguments']
+
+
+    Example\Store\DataProviders\Database\MongoDb\MongoEntryDataProvider:
+        public: false
+
+    Example\Store\Domain\UseCases\DataProviderDefinitions\EntryDataProvider: '@Example\Store\DataProviders\Database\MongoDb\MongoEntryDataProvider'
+

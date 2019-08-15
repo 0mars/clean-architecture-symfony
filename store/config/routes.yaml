@@ -1,0 +1,7 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+
+_swagger-ui:
+  resource: '@HBSwaggerUiBundle/Resources/config/routing.yml'
+  prefix: /docs

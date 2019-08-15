@@ -1,0 +1,17 @@
+api_platform:
+    doctrine:
+        # To enable or disable Doctrine ORM support.
+        enabled: false
+    formats:
+        json:     ['application/json']
+    mapping:
+        paths:
+            - '%kernel.project_dir%/src/EntryPoints/Rest/Resources'
+    exception_to_status:
+        # With a status code.
+        Example\Store\Domain\UseCases\Exception\ValueNotFoundException: 404
+
+    collection:
+        pagination:
+            # To enable or disable pagination for all resource collections by default.
+            enabled: false
