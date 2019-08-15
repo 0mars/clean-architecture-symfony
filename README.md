@@ -34,12 +34,6 @@ Hosts
 Service
  - URL: http://localhost:8021/ 
 
-
-Grafana:
- - URL: http://localhost:3000
-   username: admin
-   password: foobar
-
 Documentation
 =============
 - README.md
