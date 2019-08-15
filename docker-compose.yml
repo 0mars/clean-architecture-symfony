@@ -1,0 +1,39 @@
+version: '2.1'
+
+services:
+  php:
+    build:
+      context: ./store
+      args:
+        TIMEZONE: ${TIMEZONE}
+    volumes:
+      - ./${SERVICE_ROOT_PATH}:/srv/service
+    environment:
+      APP_ENV: "dev"
+      APP_DEBUG: "true"
+      PHP_IDE_CONFIG: "serverName=docker.dev"
+      MONGODB_URL: "mongodb://mongodb:27017"
+    depends_on:
+      - mongodb
+
+  nginx:
+    build: ./docker/nginx
+    ports:
+      - 8021:80
+    volumes:
+      - ${SERVICE_ROOT_PATH}/public:/srv/service/public:ro
+    depends_on:
+      - php
+
+  mongodb:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/usr/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./.data/db:/usr/data/db
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles --logpath=/dev/null # --quiet
+
+
