@@ -1,5 +1,5 @@
 # Based on https://github.com/docker-library/php/blob/35aedb29009b46af6ea1009c9405d01d3f66968e/7.2/alpine3.7/fpm/Dockerfile
-FROM php:7.2.19-fpm-alpine
+FROM php:7.4.20-fpm-alpine3.13
 ARG TIMEZONE
 
 ENV PHP_MEMORY_LIMIT 4000M
@@ -9,7 +9,7 @@ RUN apk add --no-cache --virtual .build-deps git tzdata bash make autoconf build
 
 RUN docker-php-ext-install pdo
 
-RUN pecl install mongodb \
+RUN pecl install -f mongodb \
     && docker-php-ext-enable mongodb
 
 RUN rm -rf /tmp/* /etc/apk/cache/*
@@ -24,8 +24,12 @@ RUN "date"
 
 
 # Install xdebug
-RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
+
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    && pecl install xdebug-3.0.0 \
+    && docker-php-ext-enable xdebug \
+    && apk del -f .build-deps
+
 RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
